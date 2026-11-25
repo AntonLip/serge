@@ -1,0 +1,10 @@
+@model List<ServiceRequest>
+@{ ViewData["Title"] = "Отчёт по заявкам"; }
+<div class="page-header"><h1>Заявки за период</h1><a asp-action="ExportRequests" asp-route-from="@ViewBag.From" asp-route-to="@ViewBag.To" class="btn btn-outline-success">Экспорт CSV</a></div>
+<form method="get" class="row g-2 mb-3"><div class="col-md-3"><input type="date" name="from" value="@ViewBag.From" class="form-control" /></div><div class="col-md-3"><input type="date" name="to" value="@ViewBag.To" class="form-control" /></div><div class="col-auto"><button class="btn btn-outline-secondary">Применить</button></div></form>
+<div class="card table-responsive"><table class="table mb-0"><thead><tr><th>Номер</th><th>Создана</th><th>Клиент / объект</th><th>Услуга</th><th>Статус</th><th>Стоимость</th></tr></thead><tbody>
+@foreach (var item in Model)
+{
+    <tr><td>@item.Number</td><td>@Display.DateTime(item.CreatedAtUtc)</td><td>@item.Object.Client.Name<br />@item.Object.Name</td><td>@(item.Tariff?.Name ?? item.RequestedService ?? "Не назначена")</td><td>@Display.Text(item.Status)</td><td>@Display.Money(item.EstimatedCost)</td></tr>
+}
+</tbody><tfoot><tr><th colspan="5">Итого</th><th>@Display.Money(Model.Sum(x => x.EstimatedCost ?? 0m))</th></tr></tfoot></table></div>

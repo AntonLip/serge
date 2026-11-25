@@ -1,0 +1,22 @@
+@model LoginViewModel
+@{ ViewData["Title"] = "Вход"; }
+<div class="row justify-content-center">
+    <div class="col-md-5 col-lg-4">
+        <div class="card shadow-sm mt-5">
+            <div class="card-body p-4">
+                <h1 class="h3 mb-1">Чистый округ</h1>
+                <p class="text-muted mb-4">Вход в информационную систему</p>
+                <form method="post">
+                    @Html.AntiForgeryToken()
+                    <input asp-for="ReturnUrl" type="hidden" />
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="mb-3"><label asp-for="Email" class="form-label">Email</label><input asp-for="Email" class="form-control" autocomplete="username" /></div>
+                    <div class="mb-3"><label asp-for="Password" class="form-label">Пароль</label><input asp-for="Password" class="form-control" autocomplete="current-password" /></div>
+                    <div class="form-check mb-3"><input asp-for="RememberMe" class="form-check-input" /><label asp-for="RememberMe" class="form-check-label">Запомнить меня</label></div>
+                    <button class="btn btn-primary w-100">Войти</button>
+                </form>
+                <div class="alert alert-light border small mt-4 mb-0">Демонстрационный доступ: <strong>admin@clean-district.demo</strong><br />Пароль: <strong>Demo2026!</strong></div>
+            </div>
+        </div>
+    </div>
+</div>

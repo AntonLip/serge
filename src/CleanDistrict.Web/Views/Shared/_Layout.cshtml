@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] — Чистый округ</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/CleanDistrict.Web.styles.css" asp-append-version="true" />
+</head>
+<body class="d-flex flex-column min-vh-100">
+<header>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-success sticky-top">
+        <div class="container-fluid">
+            <a class="navbar-brand fw-semibold" asp-controller="Home" asp-action="Index">Чистый округ</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav"><span class="navbar-toggler-icon"></span></button>
+            <div class="collapse navbar-collapse" id="mainNav">
+                @if (User.Identity?.IsAuthenticated == true)
+                {
+                    <ul class="navbar-nav me-auto">
+                        @if (User.IsInRole(AppRoles.Client))
+                        {
+                            <li class="nav-item"><a class="nav-link" asp-controller="Portal" asp-action="Index">Мои заявки</a></li>
+                        }
+                        else
+                        {
+                            @if (User.IsInRole(AppRoles.Manager) || User.IsInRole(AppRoles.Administrator) || User.IsInRole(AppRoles.Director))
+                            {
+                                <li class="nav-item"><a class="nav-link" asp-controller="Clients" asp-action="Index">Клиенты</a></li>
+                                <li class="nav-item"><a class="nav-link" asp-controller="Contracts" asp-action="Index">Договоры</a></li>
+                                <li class="nav-item"><a class="nav-link" asp-controller="Estimates" asp-action="Index">Расчёты</a></li>
+                            }
+                            <li class="nav-item"><a class="nav-link" asp-controller="Requests" asp-action="Index">Заявки</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-controller="WorkOrders" asp-action="Index">Наряды</a></li>
+                            @if (User.IsInRole(AppRoles.Mechanic) || User.IsInRole(AppRoles.Dispatcher) || User.IsInRole(AppRoles.Administrator) || User.IsInRole(AppRoles.Director))
+                            {
+                                <li class="nav-item"><a class="nav-link" asp-controller="Fleet" asp-action="Index">Автопарк</a></li>
+                            }
+                            @if (User.IsInRole(AppRoles.Administrator) || User.IsInRole(AppRoles.Director) || User.IsInRole(AppRoles.Manager))
+                            {
+                                <li class="nav-item"><a class="nav-link" asp-controller="Reports" asp-action="Index">Отчёты</a></li>
+                            }
+                            @if (User.IsInRole(AppRoles.Administrator) || User.IsInRole(AppRoles.Manager))
+                            {
+                                <li class="nav-item"><a class="nav-link" asp-controller="ClientUsers" asp-action="Index">Доступ клиентов</a></li>
+                            }
+                            @if (User.IsInRole(AppRoles.Administrator))
+                            {
+                                <li class="nav-item"><a class="nav-link" asp-controller="Admin" asp-action="Index">Справочники</a></li>
+                                <li class="nav-item"><a class="nav-link" asp-controller="Users" asp-action="Index">Пользователи</a></li>
+                            }
+                        }
+                    </ul>
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="navbar-text text-white-50 small">@User.Identity?.Name</span>
+                        <form asp-controller="Account" asp-action="Logout" method="post">@Html.AntiForgeryToken()<button class="btn btn-sm btn-outline-light">Выйти</button></form>
+                    </div>
+                }
+            </div>
+        </div>
+    </nav>
+</header>
+<div class="container-fluid py-4 flex-grow-1 w-100">
+    <main role="main">
+        @if (TempData["Success"] is string success) { <div class="alert alert-success alert-dismissible">@success<button class="btn-close" data-bs-dismiss="alert"></button></div> }
+        @if (TempData["Error"] is string error) { <div class="alert alert-danger alert-dismissible">@error<button class="btn-close" data-bs-dismiss="alert"></button></div> }
+        @RenderBody()
+    </main>
+</div>
+<footer class="app-footer border-top text-muted py-3 flex-shrink-0"><div class="container-fluid small">Демонстрационная информационная система ООО «Чистый округ»</div></footer>
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script src="~/js/site.js" asp-append-version="true"></script>
+@await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

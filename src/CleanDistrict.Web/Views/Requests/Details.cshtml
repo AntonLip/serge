@@ -1,0 +1,28 @@
+@model ServiceRequest
+@{ ViewData["Title"] = "Заявка " + Model.Number; var canManage = User.IsInRole(AppRoles.Manager) || User.IsInRole(AppRoles.Dispatcher) || User.IsInRole(AppRoles.Administrator); }
+<div class="page-header"><div><h1>@Model.Number <span class="badge @Display.Badge(Model.Status)">@Display.Text(Model.Status)</span> <span class="badge text-bg-light">@Display.Text(Model.Source)</span></h1><div class="text-muted">@Display.Text(Model.Priority)</div></div>@if (Model.WorkOrder is not null) { <a asp-controller="WorkOrders" asp-action="Details" asp-route-id="@Model.WorkOrder.Id" class="btn btn-outline-primary">Наряд @Model.WorkOrder.Number</a> }</div>
+<div class="row g-3"><div class="col-lg-8"><div class="card card-body"><dl class="row">
+<dt class="col-sm-4">Клиент</dt><dd class="col-sm-8">@Model.Object.Client.Name</dd>
+<dt class="col-sm-4">Объект</dt><dd class="col-sm-8">@Model.Object.Name, @Model.Object.Address</dd>
+<dt class="col-sm-4">Менеджер</dt><dd class="col-sm-8">@Model.Object.Manager.FullName</dd>
+@if (!string.IsNullOrWhiteSpace(Model.RequestedService)) { <dt class="col-sm-4">Запрошенная услуга</dt><dd class="col-sm-8">@Model.RequestedService</dd> }
+<dt class="col-sm-4">Тариф</dt><dd class="col-sm-8">@(Model.Tariff?.Name ?? "Не назначен")</dd>
+<dt class="col-sm-4">Описание</dt><dd class="col-sm-8 white-space-pre">@Model.Description</dd>
+<dt class="col-sm-4">Желаемый срок</dt><dd class="col-sm-8">@Display.DateTime(Model.DesiredDateUtc)</dd>
+<dt class="col-sm-4">Стоимость</dt><dd class="col-sm-8">@Display.Money(Model.EstimatedCost)</dd>
+<dt class="col-sm-4">Создал</dt><dd class="col-sm-8">@Model.CreatedByName</dd>
+@if (!string.IsNullOrWhiteSpace(Model.ContactName)) { <dt class="col-sm-4">Контактное лицо</dt><dd class="col-sm-8">@Model.ContactName</dd> }
+@if (!string.IsNullOrWhiteSpace(Model.ContactPhone)) { <dt class="col-sm-4">Телефон</dt><dd class="col-sm-8">@Model.ContactPhone</dd> }
+@if (Model.CostEstimate is not null) { <dt class="col-sm-4">Расчёт</dt><dd class="col-sm-8"><a asp-controller="Estimates" asp-action="Details" asp-route-id="@Model.CostEstimateId">Открыть расчёт</a></dd> }
+</dl></div></div>
+<div class="col-lg-4">@if (canManage) { <div class="card card-body mb-3"><h2 class="h6">Действия</h2>
+@if (Model.Status == RequestStatus.New && Model.Source == RequestSource.Client)
+{
+    <form asp-action="ProcessClient" method="post" class="mb-3">@Html.AntiForgeryToken()<input type="hidden" name="RequestId" value="@Model.Id" /><div class="mb-2"><label for="TariffId" class="form-label required">Услуга / тариф</label><select id="TariffId" name="TariffId" asp-items="ViewBag.Tariffs" class="form-select" required><option value="">Выберите тариф</option></select></div><div class="mb-2"><label for="EstimatedCost" class="form-label required">Согласованная стоимость, ₽</label><input id="EstimatedCost" name="EstimatedCost" type="number" min="0" max="1000000000" step="0.01" class="form-control" required /></div><button class="btn btn-success w-100">Назначить и согласовать</button></form>
+}
+@if (Model.Status == RequestStatus.New && Model.Source == RequestSource.Staff) { <form asp-action="ChangeStatus" method="post">@Html.AntiForgeryToken()<input type="hidden" name="id" value="@Model.Id" /><input type="hidden" name="to" value="1" /><button class="btn btn-success w-100">Согласовать заявку</button></form> }
+@if (Model.Status == RequestStatus.Approved && Model.WorkOrder is null) { <a asp-controller="WorkOrders" asp-action="Create" asp-route-requestId="@Model.Id" class="btn btn-primary w-100">Создать наряд</a> }
+@if (Model.Status == RequestStatus.Completed) { <form asp-action="ChangeStatus" method="post">@Html.AntiForgeryToken()<input type="hidden" name="id" value="@Model.Id" /><input type="hidden" name="to" value="5" /><button class="btn btn-success w-100">Закрыть заявку</button></form> }
+@if (Model.Status is RequestStatus.New or RequestStatus.Approved or RequestStatus.Assigned) { <form asp-action="ChangeStatus" method="post" class="mt-2">@Html.AntiForgeryToken()<input type="hidden" name="id" value="@Model.Id" /><input type="hidden" name="to" value="6" /><input name="comment" class="form-control mb-2" placeholder="Причина отмены" required maxlength="1000" /><button class="btn btn-outline-danger w-100">Отменить заявку</button></form> }
+</div> }
+<div class="card card-body"><h2 class="h6">История статусов</h2>@foreach (var item in Model.History) { <div class="border-bottom pb-2 mb-2 small"><strong>@Display.Text(item.FromStatus) → @Display.Text(item.ToStatus)</strong><br />@Display.DateTime(item.ChangedAtUtc)<br />@item.ChangedByName<div class="text-muted">@item.Comment</div></div> }</div></div></div>

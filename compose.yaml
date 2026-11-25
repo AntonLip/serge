@@ -1,0 +1,39 @@
+services:
+  postgres:
+    image: postgres:18
+    container_name: clean-district-postgres
+    environment:
+      POSTGRES_DB: cleandistrict
+      POSTGRES_USER: cleandistrict
+      POSTGRES_PASSWORD: cleandistrict_dev
+    ports:
+      - "5432:5432"
+    volumes:
+      - cleandistrict_pgdata:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U cleandistrict -d cleandistrict"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: clean-district-web
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__DefaultConnection: Host=postgres;Port=5432;Database=cleandistrict;Username=cleandistrict;Password=cleandistrict_dev
+    ports:
+      - "5080:8080"
+    volumes:
+      - cleandistrict_uploads:/app/App_Data/uploads
+      - cleandistrict_dataprotection:/home/app/.aspnet/DataProtection-Keys
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  cleandistrict_pgdata:
+  cleandistrict_uploads:
+  cleandistrict_dataprotection:

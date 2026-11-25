@@ -1,0 +1,20 @@
+@model ServiceRequest
+@{ ViewData["Title"] = "Заявка " + Model.Number; }
+<div class="page-header"><div><h1>@Model.Number <span class="badge @Display.Badge(Model.Status)">@Display.Text(Model.Status)</span></h1><div class="text-muted">Создана @Display.DateTime(Model.CreatedAtUtc)</div></div><a asp-action="Index" class="btn btn-outline-secondary">К списку заявок</a></div>
+<div class="row g-3"><div class="col-lg-8"><div class="card card-body"><dl class="row">
+<dt class="col-sm-4">Объект</dt><dd class="col-sm-8">@Model.Object.Name, @Model.Object.Address</dd>
+<dt class="col-sm-4">Запрошенная услуга</dt><dd class="col-sm-8">@(Model.RequestedService ?? Model.Tariff?.Name ?? "По описанию работ")</dd>
+@if (Model.Tariff is not null) { <dt class="col-sm-4">Назначенный тариф</dt><dd class="col-sm-8">@Model.Tariff.Name</dd> }
+<dt class="col-sm-4">Описание</dt><dd class="col-sm-8 white-space-pre">@Model.Description</dd>
+<dt class="col-sm-4">Желаемый срок</dt><dd class="col-sm-8">@Display.DateTime(Model.DesiredDateUtc)</dd>
+<dt class="col-sm-4">Стоимость</dt><dd class="col-sm-8">@Display.Money(Model.EstimatedCost)</dd>
+<dt class="col-sm-4">Контактное лицо</dt><dd class="col-sm-8">@(Model.ContactName ?? Model.CreatedByName)</dd>
+@if (!string.IsNullOrWhiteSpace(Model.ContactPhone)) { <dt class="col-sm-4">Телефон</dt><dd class="col-sm-8">@Model.ContactPhone</dd> }
+</dl></div></div>
+<div class="col-lg-4">
+@if (Model.Source == RequestSource.Client && Model.Status == RequestStatus.New)
+{
+    <div class="card card-body mb-3"><h2 class="h6">Отмена заявки</h2><p class="small text-muted">После согласования отмена выполняется через сотрудника.</p><form asp-action="Cancel" method="post">@Html.AntiForgeryToken()<input type="hidden" name="id" value="@Model.Id" /><label for="comment" class="form-label">Причина отмены</label><textarea id="comment" name="comment" class="form-control mb-2" required maxlength="1000"></textarea><button class="btn btn-outline-danger w-100">Отменить заявку</button></form></div>
+}
+<div class="card card-body"><h2 class="h6">История статусов</h2>@foreach (var item in Model.History) { <div class="border-bottom pb-2 mb-2 small"><strong>@Display.Text(item.FromStatus) → @Display.Text(item.ToStatus)</strong><br />@Display.DateTime(item.ChangedAtUtc)</div> }</div>
+</div></div>

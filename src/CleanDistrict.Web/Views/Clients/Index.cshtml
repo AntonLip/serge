@@ -1,0 +1,8 @@
+@model PagedList<Client>
+@{ ViewData["Title"] = "Клиенты"; }
+<div class="page-header"><h1>Клиенты</h1>@if (User.IsInRole(AppRoles.Manager) || User.IsInRole(AppRoles.Administrator)) { <a asp-action="Create" class="btn btn-primary">Добавить клиента</a> }</div>
+<form method="get" class="row g-2 mb-3"><div class="col-md-5"><input name="search" value="@ViewBag.Search" class="form-control" placeholder="Название или контактное лицо" /></div><div class="col-auto"><button class="btn btn-outline-secondary">Найти</button></div></form>
+<div class="card table-responsive"><table class="table table-hover mb-0"><thead><tr><th>Организация</th><th>Контактное лицо</th><th>Телефон</th><th>Email</th></tr></thead><tbody>
+@foreach (var item in Model) { <tr><td><a asp-action="Details" asp-route-id="@item.Id">@item.Name</a></td><td>@item.ContactName</td><td>@item.Phone</td><td>@item.Email</td></tr> }
+</tbody></table></div>
+<partial name="_Pagination" model="Model" />

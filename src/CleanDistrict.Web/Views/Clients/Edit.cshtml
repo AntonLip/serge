@@ -1,0 +1,3 @@
+@model Client
+@{ ViewData["Title"] = "Редактирование клиента"; }
+<h1>Редактирование клиента</h1><form method="post" class="card card-body col-lg-7">@Html.AntiForgeryToken()<partial name="_Form" model="Model" /><div><button class="btn btn-primary">Сохранить</button> <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-link">Отмена</a></div></form>

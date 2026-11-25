@@ -1,0 +1,3 @@
+@model CostEstimate
+@{ ViewData["Title"] = "Коммерческое предложение"; }
+<button onclick="window.print()" class="btn btn-success no-print mb-3">Печать / сохранить в PDF</button><div class="card card-body"><h1 class="h3">Коммерческое предложение</h1><p class="text-muted">ООО «Чистый округ» · @Display.DateTime(Model.CreatedAtUtc)</p><partial name="_EstimateTable" model="Model" /><p class="small text-muted">Расчёт является предварительным. Все тарифы и исходные данные демонстрационные.</p><p class="mt-5">Менеджер: ________________ / @Model.Object.Manager?.FullName /</p></div>

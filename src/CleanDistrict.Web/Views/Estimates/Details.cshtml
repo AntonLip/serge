@@ -1,0 +1,4 @@
+@model CostEstimate
+@{ ViewData["Title"] = "Расчёт стоимости"; }
+<div class="page-header"><div><h1>Расчёт от @Display.DateTime(Model.CreatedAtUtc)</h1><div class="text-muted">@Model.Object.Name · @Model.Tariff.Name</div></div><div><a asp-action="Print" asp-route-id="@Model.Id" class="btn btn-outline-secondary">Коммерческое предложение</a></div></div>
+<div class="card card-body col-lg-9"><partial name="_EstimateTable" model="Model" /><a asp-controller="Requests" asp-action="Create" asp-route-objectId="@Model.ObjectId" asp-route-estimateId="@Model.Id" class="btn btn-success mt-3">Создать заявку на основе расчёта</a></div>

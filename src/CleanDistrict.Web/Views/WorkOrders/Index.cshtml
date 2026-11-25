@@ -1,0 +1,5 @@
+@model List<WorkOrder>
+@{ ViewData["Title"] = "Производственные наряды"; }
+<div class="page-header"><h1>Производственные наряды</h1></div>
+<form method="get" class="row g-2 mb-3"><div class="col-md-3"><select name="status" asp-items="ViewBag.Statuses" class="form-select"><option value="">Все статусы</option></select></div><div class="col-auto"><button class="btn btn-outline-secondary">Применить</button></div></form>
+<div class="card table-responsive"><table class="table table-hover mb-0"><thead><tr><th>Номер</th><th>Заявка / объект</th><th>Бригада</th><th>Плановый период</th><th>Статус</th></tr></thead><tbody>@foreach (var item in Model) { <tr><td><a asp-action="Details" asp-route-id="@item.Id">@item.Number</a></td><td>@item.ServiceRequest.Number · @item.ServiceRequest.Object.Name</td><td>@item.Crew.Name</td><td>@Display.DateTime(item.PlannedStartUtc)<br />— @Display.DateTime(item.PlannedEndUtc)</td><td>@Display.Text(item.Status)</td></tr> }</tbody></table></div>

@@ -1,0 +1,6 @@
+@model List<UserListItemViewModel>
+@{ ViewData["Title"] = "Пользователи"; }
+<div class="page-header"><h1>Пользователи</h1><div><a asp-controller="ClientUsers" asp-action="Index" class="btn btn-outline-primary">Доступ клиентов</a> <a asp-action="Create" class="btn btn-primary">Добавить пользователя</a></div></div>
+<div class="table-responsive card"><table class="table table-hover mb-0"><thead><tr><th>ФИО</th><th>Email</th><th>Роли</th><th>Состояние</th><th></th></tr></thead><tbody>
+@foreach (var user in Model) { <tr><td>@user.FullName</td><td>@user.Email</td><td>@user.Roles</td><td>@(user.IsLockedOut ? "Заблокирован" : "Активен")</td><td class="text-end"><form asp-action="ToggleLockout" method="post">@Html.AntiForgeryToken()<input type="hidden" name="id" value="@user.Id" /><button class="btn btn-sm btn-outline-secondary">@(user.IsLockedOut ? "Разблокировать" : "Заблокировать")</button></form></td></tr> }
+</tbody></table></div>

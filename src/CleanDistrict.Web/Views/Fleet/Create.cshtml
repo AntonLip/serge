@@ -1,0 +1,2 @@
+@model Vehicle
+@{ ViewData["Title"] = "Новая техника"; }<h1>Новая техника</h1><form method="post" class="card card-body col-lg-9">@Html.AntiForgeryToken()<partial name="_Form" model="Model" /><div><button class="btn btn-primary">Сохранить</button> <a asp-action="Index" class="btn btn-link">Отмена</a></div></form>

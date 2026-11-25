@@ -1,0 +1,2 @@
+@model Employee
+@{ ViewData["Title"] = "Редактирование сотрудника"; }<h1>Редактирование сотрудника</h1><form method="post" class="card card-body col-lg-6">@Html.AntiForgeryToken()<partial name="_EmployeeForm" model="Model" /><button class="btn btn-primary">Сохранить</button> <a asp-action="Employees" class="btn btn-link">Отмена</a></form>

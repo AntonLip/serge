@@ -1,0 +1,6 @@
+@model ServiceObject
+<input asp-for="ClientId" type="hidden" /><div asp-validation-summary="ModelOnly" class="text-danger"></div>
+<div class="mb-3"><label asp-for="Name" class="form-label required">Название объекта</label><input asp-for="Name" class="form-control" /></div>
+<div class="mb-3"><label asp-for="Address" class="form-label required">Адрес</label><input asp-for="Address" class="form-control" /></div>
+<div class="row"><div class="col-md-6 mb-3"><label asp-for="AreaSquareMeters" class="form-label required">Площадь, м²</label><input asp-for="AreaSquareMeters" class="form-control" /></div><div class="col-md-6 mb-3"><label class="form-label required">Персональный менеджер</label><select asp-for="ManagerId" asp-items="ViewBag.Managers" class="form-select"><option value="">Выберите менеджера</option></select></div></div>
+<div class="mb-3"><label asp-for="Notes" class="form-label">Примечания</label><textarea asp-for="Notes" class="form-control"></textarea></div>

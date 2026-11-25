@@ -1,0 +1,10 @@
+@model ClientRequestInputModel
+@{ ViewData["Title"] = "Новая заявка"; }
+<h1>Новая заявка</h1>
+<p class="text-muted">Опишите необходимые работы. Тариф и стоимость назначит сотрудник при согласовании.</p>
+<form method="post" class="card card-body col-lg-8">@Html.AntiForgeryToken()<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+<div class="mb-3"><label asp-for="ObjectId" class="form-label required"></label><select asp-for="ObjectId" asp-items="ViewBag.Objects" class="form-select"><option value="">Выберите объект</option></select><span asp-validation-for="ObjectId" class="text-danger"></span></div>
+<div class="mb-3"><label asp-for="RequestedService" class="form-label required"></label><input asp-for="RequestedService" class="form-control" placeholder="Например, уборка территории" /><span asp-validation-for="RequestedService" class="text-danger"></span></div>
+<div class="mb-3"><label asp-for="Description" class="form-label required"></label><textarea asp-for="Description" class="form-control" rows="5"></textarea><span asp-validation-for="Description" class="text-danger"></span></div>
+<div class="row"><div class="col-md-4 mb-3"><label asp-for="DesiredDateLocal" class="form-label required"></label><input asp-for="DesiredDateLocal" type="datetime-local" class="form-control" /><span asp-validation-for="DesiredDateLocal" class="text-danger"></span></div><div class="col-md-4 mb-3"><label asp-for="ContactName" class="form-label required"></label><input asp-for="ContactName" class="form-control" /><span asp-validation-for="ContactName" class="text-danger"></span></div><div class="col-md-4 mb-3"><label asp-for="ContactPhone" class="form-label required"></label><input asp-for="ContactPhone" class="form-control" /><span asp-validation-for="ContactPhone" class="text-danger"></span></div></div>
+<div><button class="btn btn-primary">Отправить заявку</button> <a asp-action="Index" class="btn btn-link">Отмена</a></div></form>
